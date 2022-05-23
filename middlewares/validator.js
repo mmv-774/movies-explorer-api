@@ -2,6 +2,21 @@ const { Joi } = require('celebrate');
 
 const urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/;
 
+const signInSchema = {
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+  }),
+};
+
+const signUpSchema = {
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30),
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+  }),
+};
+
 const patchUserSchema = {
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
@@ -32,6 +47,8 @@ const deleteMovieByIdSchema = {
 };
 
 module.exports = {
+  signInSchema,
+  signUpSchema,
   patchUserSchema,
   createMovieSchema,
   deleteMovieByIdSchema,
