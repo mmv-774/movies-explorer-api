@@ -36,7 +36,7 @@ const schema = new mongoose.Schema(
       required: true,
       validate: {
         validator: (v) => validator.isURL(v),
-        message: 'Некорректная ссылка на постер',
+        message: 'Некорректная ссылка на трейлер',
       },
     },
     thumbnail: {
