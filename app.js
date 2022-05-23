@@ -1,6 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { celebrate, errors } = require('celebrate');
@@ -19,6 +21,13 @@ mongoose.connect('mongodb://localhost:27017/moviesdb');
 
 app.use(bodyParser.json());
 app.use(requestLogger);
+app.use(helmet());
+app.use(rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+}));
 app.use(cors());
 app.post('/signin', celebrate(signInSchema), login);
 app.post('/signup', celebrate(signUpSchema), createUser);
