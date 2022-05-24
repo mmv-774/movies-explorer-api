@@ -34,6 +34,7 @@ const createMovieSchema = {
     image: Joi.string().required().pattern(urlRegex),
     trailerLink: Joi.string().required().pattern(urlRegex),
     thumbnail: Joi.string().required().pattern(urlRegex),
+    owner: Joi.string().required().hex().length(24),
     movieId: Joi.string().required().hex().length(24),
     nameRU: Joi.string().required(),
     nameEN: Joi.string().required(),
