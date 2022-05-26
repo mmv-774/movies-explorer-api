@@ -52,7 +52,7 @@ module.exports.deleteMovieById = (req, res, next) => {
       if (movie.owner.toString() !== req.user._id) {
         throw HttpError.forbidden('Нельзя удалять чужие фильмы');
       }
-      Movie.deleteOne({ _id: req.params.id }).then(() => res.send(movie));
+      return Movie.deleteOne({ _id: req.params.id }).then(() => res.send(movie));
     })
     .catch((error) => movieQueryErrorHandler(error, next, { validation: 'Переданы некорректные данные для удаления фильма' }));
 };

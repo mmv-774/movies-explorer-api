@@ -7,6 +7,7 @@ module.exports.httpErrorHandler = (err, req, res, next) => {
   }
 
   res.status(500).send({ message: HttpError.internal().message });
+  next();
 };
 
 module.exports.notFoundErrorHandler = (req, res, next) => {

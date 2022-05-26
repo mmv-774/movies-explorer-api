@@ -5,19 +5,18 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const { celebrate, errors } = require('celebrate');
+const { errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { notFoundErrorHandler, httpErrorHandler } = require('./middlewares/middlewares');
-const { signInSchema, signUpSchema } = require('./middlewares/validator');
 const auth = require('./middlewares/auth');
-const { login, createUser } = require('./controllers/users');
+const authRouter = require('./routes/auth');
 const userRouter = require('./routes/users');
 const movieRouter = require('./routes/movies');
 
-const { PORT = 3000 } = process.env;
+const { NODE_ENV, DB_URI, PORT = 3000 } = process.env;
 
 const app = express();
-mongoose.connect('mongodb://localhost:27017/moviesdb');
+mongoose.connect(NODE_ENV === 'production' ? DB_URI : 'mongodb://localhost:27017/moviesdb');
 
 app.use(bodyParser.json());
 app.use(requestLogger);
@@ -29,10 +28,9 @@ app.use(rateLimit({
   legacyHeaders: false,
 }));
 app.use(cors());
-app.post('/signin', celebrate(signInSchema), login);
-app.post('/signup', celebrate(signUpSchema), createUser);
-app.use('/users', auth, userRouter);
-app.use('/movies', auth, movieRouter);
+app.use(authRouter);
+app.use(userRouter);
+app.use(movieRouter);
 app.use(errorLogger);
 app.use('*', auth, notFoundErrorHandler);
 app.use(errors());
