@@ -1,6 +1,12 @@
 const { Joi } = require('celebrate');
+const validator = require('validator');
 
-const urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/;
+const customValidateUrl = (value, helpers) => {
+  if (validator.isURL(value)) {
+    return value;
+  }
+  return helpers.message(`Поле ${helpers.state.path[0]} заполнено некорректно`);
+};
 
 const signInSchema = {
   body: Joi.object().keys({
@@ -31,9 +37,9 @@ const createMovieSchema = {
     duration: Joi.number().required(),
     year: Joi.string().required(),
     description: Joi.string().required(),
-    image: Joi.string().required().pattern(urlRegex),
-    trailerLink: Joi.string().required().pattern(urlRegex),
-    thumbnail: Joi.string().required().pattern(urlRegex),
+    image: Joi.string().required().custom(customValidateUrl),
+    trailerLink: Joi.string().required().custom(customValidateUrl),
+    thumbnail: Joi.string().required().custom(customValidateUrl),
     movieId: Joi.number().required(),
     nameRU: Joi.string().required(),
     nameEN: Joi.string().required(),
